@@ -1,5 +1,7 @@
 const superagent = require('superagent')
 const cheerio = require('cheerio')
+const executingQueue = require('../../utils/superagent')
+
 const Students = require('../../models/Students')
 const Users = require('../../models/Users')
 const { requestHeader, url, SimulateLogin } = require('../../utils/hrbust')
@@ -103,11 +105,11 @@ const getWeek = async (ctx) => {
   if (weekRedis) {
     weekData = JSON.parse(weekRedis)
   } else {
-    const response = await superagent
+    const response = await executingQueue(() => superagent
       .get(url.indexListLeft)
       .charset()
       .set(requestHeader)
-      .catch(e => ctx.throw(400, e))
+      .catch(e => ctx.throw(400, e)))
 
     const body = response.text
     const $ = cheerio.load(body)

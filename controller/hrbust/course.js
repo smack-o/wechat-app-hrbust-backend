@@ -1,6 +1,7 @@
 const crypto = require('crypto')
 const superagent = require('superagent')
 const cheerio = require('cheerio')
+const executingQueue = require('../../utils/superagent')
 const to = require('../../utils/awaitErrorCatch')
 const Students = require('../../models/Students')
 const Course = require('../../models/Course')
@@ -13,7 +14,7 @@ const {
   checkLogin,
 } = require('../../utils/hrbust')
 
-function md5 (text) {
+function md5(text) {
   return crypto.createHash('md5').update(text).digest('hex')
 }
 
@@ -51,11 +52,11 @@ const getPeriod = (startWeek, endWeek, weekType = 0, normalWeekArray) => {
 }
 
 // 获取学生id，获取课程表的时候需要用到
-const getStudentId = cookie => superagent
+const getStudentId = cookie => executingQueue(() => superagent
   .get(url.studentId)
   .charset()
   .set(requestHeader)
-  .set('Cookie', cookie)
+  .set('Cookie', cookie))
   .then(response => {
     const body = response.text
     const $ = cheerio.load(body)
@@ -165,11 +166,11 @@ const updateCourse = async (ctx) => {
   // cookie = loginResult.cookie
 
   const getCourseUrl = await getStudentId(cookie)
-  let response = await superagent
+  let response = await executingQueue(() => superagent
     .get(`${getCourseUrl}&termid=${termid}&yearid=${yearid}`)
     .charset()
     .set(requestHeader)
-    .set('Cookie', cookie)
+    .set('Cookie', cookie))
 
   let body = response.text
   let $ = cheerio.load(body, { decodeEntities: false })
@@ -191,11 +192,11 @@ const updateCourse = async (ctx) => {
     term = currentTerm
     yearid = parseInt(currentGrade) + 20 + Math.ceil(currentTerm / 2)
 
-    response = await superagent
+    response = await executingQueue(() => superagent
       .get(`${getCourseUrl}&termid=${termid}&yearid=${yearid}`)
       .charset()
       .set(requestHeader)
-      .set('Cookie', cookie)
+      .set('Cookie', cookie))
 
     body = response.text
     $ = cheerio.load(body, { decodeEntities: false })

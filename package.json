@@ -15,12 +15,14 @@
     "lint"
   ],
   "dependencies": {
+    "bluebird": "^3.7.2",
     "cheerio": "^1.0.0-rc.2",
     "co-wechat": "^2.4.0",
     "crypto": "^1.0.1",
     "debug": "^2.6.3",
     "ejs": "^2.6.1",
     "file-box": "^0.8.27",
+    "iconv-lite": "^0.6.3",
     "koa": "^2.2.0",
     "koa-better-body": "^3.0.4",
     "koa-bodyparser": "^3.2.0",
@@ -52,6 +54,8 @@
     "sha1": "^1.1.1",
     "superagent": "^3.8.3",
     "superagent-charset": "^1.2.0",
+    "superagent-proxy": "^2.1.0",
+    "tunnel": "0.0.6",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

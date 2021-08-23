@@ -1,6 +1,7 @@
 const cheerio = require('cheerio')
 const charset = require('superagent-charset')
 const superagent = charset(require('superagent'))
+const executingQueue = require('./superagent');
 const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
@@ -53,7 +54,7 @@ const url = {
  */
 
 class SimulateLogin {
-  constructor (option = {}) {
+  constructor(option = {}) {
     const {
       autoCaptcha = false,
       username,
@@ -75,7 +76,7 @@ class SimulateLogin {
     }
   }
 
-  async login () {
+  async login() {
     const data = await this.checkCookie()
 
     // cookie 合法 不需要登录
@@ -93,7 +94,7 @@ class SimulateLogin {
     return this.autoDiscernCaptcha()
   }
 
-  async autoDiscernCaptcha () {
+  async autoDiscernCaptcha() {
     this.discernCount += 1
     if (this.discernCount > 40) {
       // 自动识别超过30次，就不再自动识别了
@@ -129,7 +130,7 @@ class SimulateLogin {
   }
 
   // 异步获取验证码
-  async getCaptcha () {
+  async getCaptcha() {
     await this.getCookie()
     const buffer = await this.getCaptchaBuffer()
     // base 拼接
@@ -137,9 +138,9 @@ class SimulateLogin {
   }
 
   // 检查是否登录，并返回当前学期、周数
-  checkCookie () {
+  checkCookie() {
     return new Promise(resolve => {
-      superagent
+      executingQueue(() => superagent
         .get(url.indexListLeft)
         .charset()
         .set(requestHeader)
@@ -170,20 +171,20 @@ class SimulateLogin {
               isValidCookie: !flag,
             })
           }
-        })
+        }))
     })
   }
 
   // 获取 cookie
-  getCookie () {
-    return superagent
+  getCookie() {
+    return executingQueue(() => superagent
       .post(url.login_url)
       .set(requestHeader)
       .redirects(0)
-      .then((res) => {
-        this.cookie = res.headers['set-cookie'][0].split(';')[0]
-        return Promise.resolve(this.cookie)
-      })
+    ).then((res) => {
+      this.cookie = res.headers['set-cookie'][0].split(';')[0]
+      return Promise.resolve(this.cookie)
+    })
       .catch(error => {
         return Promise.reject((getErrorData({
           error,
@@ -193,16 +194,16 @@ class SimulateLogin {
   }
 
   // 获取验证码
-  getCaptchaBuffer () {
-    return superagent
+  getCaptchaBuffer() {
+    return executingQueue(() => superagent
       .get(url.captcha_url)
       .buffer(true)
       .set(requestHeader)
       .set('Cookie', this.cookie)
-      .then(response => {
-        const dataBuffer = Buffer.from(response.body, 'base64')
-        return Promise.resolve(dataBuffer)
-      })
+    ).then(response => {
+      const dataBuffer = Buffer.from(response.body, 'base64')
+      return Promise.resolve(dataBuffer)
+    })
       .catch(error => {
         Promise.reject(getErrorData({
           error,
@@ -212,7 +213,7 @@ class SimulateLogin {
   }
 
   // 验证码识别
-  async discernCaptchaHandler () {
+  async discernCaptchaHandler() {
     const buffer = await this.getCaptchaBuffer()
     const captchaPath = path.resolve(__dirname, `../captchaCache/${captchaCount}.jpg`)
     console.warn(`captchaCount: ${captchaCount}`, buffer)
@@ -246,8 +247,8 @@ class SimulateLogin {
   }
 
   // 登录处理
-  loginHandler () {
-    return superagent
+  loginHandler() {
+    return executingQueue(() => superagent
       .post(url.check_url)
       .send({
         j_username: this.username,
@@ -257,6 +258,7 @@ class SimulateLogin {
       .set(requestHeader)
       .set('Cookie', this.cookie)
       .redirects(0)
+    )
       .catch(async (e) => {
         const location = e.response.headers.location
         if (e.response.headers['set-cookie'] && e.response.headers['set-cookie'] && e.response.headers['set-cookie'][0]) {
@@ -281,12 +283,12 @@ class SimulateLogin {
   }
 
   // 登录成功更新数据库信息
-  getName () {
-    return superagent
+  getName() {
+    return executingQueue(() => superagent
       .get(url.indexHeader)
       .charset()
       .set(requestHeader)
-      .set('Cookie', this.cookie)
+      .set('Cookie', this.cookie))
       .then(async (response) => {
         const body = response.text
         const $ = cheerio.load(body)
@@ -296,9 +298,9 @@ class SimulateLogin {
   }
 
   // 登录错误处理
-  errorHandler () {
+  errorHandler() {
     const promise = new Promise((resove, reject) => {
-      superagent
+      executingQueue(() => superagent
         .get(url.loginError)
         .charset()
         .set(requestHeader)
@@ -328,7 +330,7 @@ class SimulateLogin {
             message: errorText,
             code,
           }))
-        })
+        }))
     })
     return promise
   }
@@ -337,6 +339,7 @@ class SimulateLogin {
 // 所有哈理工教务处需要登录的接口，都需要此函数校验是否登录，
 // 若未登录返回验证码，并设置新cookie到session种
 const checkLogin = async (ctx, option = { autoCaptcha: false }) => {
+  console.log('checkLogin------------=------')
   const { autoCaptcha } = option
   const { hrbustCookie, username } = ctx.session
   const { captcha } = ctx.query

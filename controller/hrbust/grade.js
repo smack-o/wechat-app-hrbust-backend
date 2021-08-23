@@ -1,5 +1,6 @@
 const superagent = require('superagent')
 const cheerio = require('cheerio')
+const executingQueue = require('../../utils/superagent')
 const {
   requestHeader,
   checkLogin,
@@ -21,7 +22,7 @@ const getGrade = async (ctx) => {
   let cookie = ctx.session.hrbustCookie
   const { year, term } = ctx.query
 
-  const response = await superagent
+  const response = await executingQueue(() => superagent
     .post(url.grade_url)
     .charset()
     .send({
@@ -30,7 +31,7 @@ const getGrade = async (ctx) => {
       para: 0,
     })
     .set(requestHeader)
-    .set('Cookie', cookie)
+    .set('Cookie', cookie))
   // console.log(response)
   const body = response.text
   const $ = cheerio.load(body)

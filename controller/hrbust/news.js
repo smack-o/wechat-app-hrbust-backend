@@ -1,5 +1,7 @@
 const superagent = require('superagent')
 const cheerio = require('cheerio')
+const executingQueue = require('../../utils/superagent')
+
 const {
   requestHeader,
   url,
@@ -9,10 +11,10 @@ const {
 const getNews = async (ctx) => {
   const pageNum = ctx.query.page || 1
   const cUrl = `${url.news_url}&pagingPage=${pageNum}`
-  const response = await superagent
+  const response = await executingQueue(() => superagent
     .get(cUrl)
     .charset()
-    .set(requestHeader)
+    .set(requestHeader))
 
   const body = response.text
   const $ = cheerio.load(body)
