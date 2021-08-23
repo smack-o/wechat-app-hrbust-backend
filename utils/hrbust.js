@@ -53,7 +53,7 @@ const url = {
  */
 
 class SimulateLogin {
-  constructor (option = {}) {
+  constructor(option = {}) {
     const {
       autoCaptcha = false,
       username,
@@ -75,7 +75,7 @@ class SimulateLogin {
     }
   }
 
-  async login () {
+  async login() {
     const data = await this.checkCookie()
 
     // cookie 合法 不需要登录
@@ -93,7 +93,7 @@ class SimulateLogin {
     return this.autoDiscernCaptcha()
   }
 
-  async autoDiscernCaptcha () {
+  async autoDiscernCaptcha() {
     this.discernCount += 1
     if (this.discernCount > 40) {
       // 自动识别超过30次，就不再自动识别了
@@ -129,7 +129,7 @@ class SimulateLogin {
   }
 
   // 异步获取验证码
-  async getCaptcha () {
+  async getCaptcha() {
     await this.getCookie()
     const buffer = await this.getCaptchaBuffer()
     // base 拼接
@@ -137,7 +137,7 @@ class SimulateLogin {
   }
 
   // 检查是否登录，并返回当前学期、周数
-  checkCookie () {
+  checkCookie() {
     return new Promise(resolve => {
       superagent
         .get(url.indexListLeft)
@@ -175,7 +175,7 @@ class SimulateLogin {
   }
 
   // 获取 cookie
-  getCookie () {
+  getCookie() {
     return superagent
       .post(url.login_url)
       .set(requestHeader)
@@ -193,7 +193,7 @@ class SimulateLogin {
   }
 
   // 获取验证码
-  getCaptchaBuffer () {
+  getCaptchaBuffer() {
     return superagent
       .get(url.captcha_url)
       .buffer(true)
@@ -212,7 +212,7 @@ class SimulateLogin {
   }
 
   // 验证码识别
-  async discernCaptchaHandler () {
+  async discernCaptchaHandler() {
     const buffer = await this.getCaptchaBuffer()
     const captchaPath = path.resolve(__dirname, `../captchaCache/${captchaCount}.jpg`)
     console.warn(`captchaCount: ${captchaCount}`, buffer)
@@ -246,7 +246,7 @@ class SimulateLogin {
   }
 
   // 登录处理
-  loginHandler () {
+  loginHandler() {
     return superagent
       .post(url.check_url)
       .send({
@@ -259,10 +259,11 @@ class SimulateLogin {
       .redirects(0)
       .catch(async (e) => {
         const location = e.response.headers.location
+        console.log(location, 'location');
         if (e.response.headers['set-cookie'] && e.response.headers['set-cookie'] && e.response.headers['set-cookie'][0]) {
           this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
         }
-        if (location === url.index || location === url.index_new) {
+        if (location === url.index || location === url.index_new || location === '/academic/index_new.jsp') {
           console.warn('login good')
 
           // 获取用户名
@@ -281,7 +282,7 @@ class SimulateLogin {
   }
 
   // 登录成功更新数据库信息
-  getName () {
+  getName() {
     return superagent
       .get(url.indexHeader)
       .charset()
@@ -296,7 +297,7 @@ class SimulateLogin {
   }
 
   // 登录错误处理
-  errorHandler () {
+  errorHandler() {
     const promise = new Promise((resove, reject) => {
       superagent
         .get(url.loginError)
