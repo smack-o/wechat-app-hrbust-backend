@@ -5,7 +5,7 @@ const uuidv4 = require('uuid/v4');
 
 const queue = {};
 
-const MAX_MOUNT = 5;
+const MAX_MOUNT = 2;
 
 let executing = false;
 
