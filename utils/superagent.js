@@ -10,14 +10,15 @@ const MAX_MOUNT = 5;
 let executing = false;
 
 const exeQueue = async () => {
+  let list = Object.keys(queue);
+  console.log(list.length, 'list length')
   if (executing) {
     return;
   }
   executing = true;
-  let list = Object.keys(queue);
+  list = Object.keys(queue);
   console.log(list.length, 'list length')
   const promises = list.splice(0, MAX_MOUNT).map(async (key) => {
-    console.log(queue[key])
     const res = await queue[key]();
     delete queue[key];
     return res;
