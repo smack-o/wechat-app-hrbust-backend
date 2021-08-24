@@ -39,9 +39,20 @@ function executingQueue(fn) {
   const promise = new Promise((resolve, reject) => {
     const id = uuidv4();
     queue[id] = () => {
-      return Promise.all([delay(3000), fn().then((res) => {
+      const req = Promise.all([delay(3000), fn().then((res) => {
         resolve(res)
       }).catch(reject)])
+
+      return Promise.race([delay(10000).then(() => {
+        return Promise.resolve('Timeout')
+      }), req]).then((res) => {
+        if (res === 'Timeout') {
+          console.log('-------executingQueue Timeout-------');
+          // 超时x
+          return reject(new Error('Timeout'));
+        }
+        return res;
+      })
     };
     // queue[id]().then(res => console.log(res))
   });
