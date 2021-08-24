@@ -146,32 +146,32 @@ class SimulateLogin {
         .set(requestHeader)
         .set('Cookie', this.cookie)
         .redirects(0)
-        .end((err, response) => {
-          if (err) {
-            console.error('get index is error')
-            resolve({
-              isValidCookie: false,
-            })
-          } else {
-            const body = response.text
-            const $ = cheerio.load(body)
-            const result = $('#date span').text()
-            const thisWeek = result.replace(/\s/g, '')
-            this.week = thisWeek.match(/第(\w*)周/)[1] ? parseInt(thisWeek.match(/第(\w*)周/)[1]) : 1
-            const terms = thisWeek.match(/(\w*)(秋|春)/)
-            this.year = parseInt(terms[1]) - 1980
-            const termsObj = {
-              春: 1,
-              秋: 2,
-            }
-            this.term = termsObj[terms[2]]
-            // 如果 lenght是0 证明未登陆 cookie 失效
-            const flag = $('#menu li').length === 0
-            resolve({
-              isValidCookie: !flag,
-            })
+        .then((response) => {
+          const body = response.text
+          const $ = cheerio.load(body)
+          const result = $('#date span').text()
+          const thisWeek = result.replace(/\s/g, '')
+          this.week = thisWeek.match(/第(\w*)周/)[1] ? parseInt(thisWeek.match(/第(\w*)周/)[1]) : 1
+          const terms = thisWeek.match(/(\w*)(秋|春)/)
+          this.year = parseInt(terms[1]) - 1980
+          const termsObj = {
+            春: 1,
+            秋: 2,
           }
-        }))
+          this.term = termsObj[terms[2]]
+          // 如果 lenght是0 证明未登陆 cookie 失效
+          const flag = $('#menu li').length === 0
+          resolve({
+            isValidCookie: !flag,
+          })
+          // }
+        }).catch(() => {
+          console.error('get index is error')
+          resolve({
+            isValidCookie: false,
+          })
+        })
+      )
     })
   }
 
@@ -264,7 +264,7 @@ class SimulateLogin {
         if (e.response.headers['set-cookie'] && e.response.headers['set-cookie'] && e.response.headers['set-cookie'][0]) {
           this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
         }
-        if (location === url.index || location === url.index_new) {
+        if (location === url.index || location === url.index_new || location === '/academic/index_new.jsp') {
           console.warn('login good')
 
           // 获取用户名
@@ -305,13 +305,7 @@ class SimulateLogin {
         .charset()
         .set(requestHeader)
         .set('Cookie', this.cookie)
-        .end((error, response) => {
-          if (error) {
-            return reject((getErrorData({
-              error,
-              code: 400001,
-            })))
-          }
+        .then((response) => {
           const body = response.text
           const $ = cheerio.load(body)
           const errorText = $('#message').text().replace(/\s/g, '')
@@ -330,6 +324,12 @@ class SimulateLogin {
             message: errorText,
             code,
           }))
+        })
+        .catch((error) => {
+          return reject((getErrorData({
+            error,
+            code: 400001,
+          })))
         }))
     })
     return promise
@@ -339,7 +339,6 @@ class SimulateLogin {
 // 所有哈理工教务处需要登录的接口，都需要此函数校验是否登录，
 // 若未登录返回验证码，并设置新cookie到session种
 const checkLogin = async (ctx, option = { autoCaptcha: false }) => {
-  console.log('checkLogin------------=------')
   const { autoCaptcha } = option
   const { hrbustCookie, username } = ctx.session
   const { captcha } = ctx.query

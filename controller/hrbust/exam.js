@@ -38,6 +38,7 @@ const getExam = async (ctx) => {
   let cookie = ctx.session.hrbustCookie
   const { page = 1 } = ctx.query
   const curl = `${url.exam_url}?pagingPageVLID=${page || 1}&pagingNumberPerVLID=10&sortDirectionVLID=-1&sortColumnVLID=s.examRoom.exam.endTime&`
+
   const response = await executingQueue(() => superagent
     .post(curl)
     .charset()
@@ -50,7 +51,6 @@ const getExam = async (ctx) => {
   const list = []
 
   const allPageCount = $('.classicLookSummary').find('b').eq(2).text()
-  // console.log(body)
   if (parseInt(page) <= parseInt(allPageCount)) {
     datalist.each((index, item) => {
       if (index === 0) {
@@ -58,7 +58,6 @@ const getExam = async (ctx) => {
       }
       const innerItems = $(item).find('td')
       const time = innerItems.eq(2).text()
-      // console.log(time)
       const startTime = moment(time.split('--')[0])
       const nowTime = moment()
       // const calendar = startTime.week() === nowTime.week()

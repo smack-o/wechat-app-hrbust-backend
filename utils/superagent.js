@@ -5,7 +5,7 @@ const uuidv4 = require('uuid/v4');
 
 const queue = {};
 
-const MAX_MOUNT = 10;
+const MAX_MOUNT = 5;
 
 let executing = false;
 
@@ -38,11 +38,11 @@ function executingQueue(fn) {
   const promise = new Promise((resolve, reject) => {
     const id = uuidv4();
     queue[id] = () => {
-      return Promise.race([delay(5000), fn().then((res) => {
+      return Promise.all([delay(4000), fn().then((res) => {
         resolve(res)
       }).catch(reject)])
     };
-    // queue[id]()
+    // queue[id]().then(res => console.log(res))
   });
 
   exeQueue();
