@@ -11,13 +11,13 @@ let executing = false;
 
 const exeQueue = async () => {
   let list = Object.keys(queue);
-  console.log(list.length, 'list length')
+  console.log(list.length, 'list length1')
   if (executing) {
     return;
   }
   executing = true;
   list = Object.keys(queue);
-  console.log(list.length, 'list length')
+  console.log(list.length, 'list length2')
   const promises = list.splice(0, MAX_MOUNT).map(async (key) => {
     const res = await queue[key]();
     delete queue[key];
@@ -26,7 +26,7 @@ const exeQueue = async () => {
 
   await Promise.all(promises)
   list = Object.keys(queue);
-  console.log(list.length, 'list length2')
+  console.log(list.length, 'list length3')
   executing = false;
   if (list.length > 0) {
     exeQueue();
@@ -39,7 +39,7 @@ function executingQueue(fn) {
   const promise = new Promise((resolve, reject) => {
     const id = uuidv4();
     queue[id] = () => {
-      return Promise.all([delay(4000), fn().then((res) => {
+      return Promise.all([delay(3000), fn().then((res) => {
         resolve(res)
       }).catch(reject)])
     };
