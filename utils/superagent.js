@@ -60,10 +60,10 @@ function executingQueue(fn) {
         resolve(res)
       }).catch((err) => {
         console.error(err)
-        reject()
+        reject(err)
       })])
 
-      return Promise.race([delay(100000).then(() => {
+      return Promise.race([delay(10000).then(() => {
         return Promise.resolve('Timeout')
       }), req]).then((res) => {
         if (res === 'Timeout') {
