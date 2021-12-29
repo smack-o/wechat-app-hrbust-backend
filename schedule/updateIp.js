@@ -46,7 +46,7 @@ const getIp = () => {
           rIps = JSON.parse(rIps || '{}')
 
           rIps[ip] = 1
-          redis.setAsync('proxy_ips', JSON.stringify(rIps), 'EX', 60 * 20)
+          redis.setAsync('proxy_ips', JSON.stringify(rIps), 'EX', 60 * 60 * 48)
         }
       })
     })
@@ -85,7 +85,7 @@ const removeIp = async () => {
   Promise.all(promise).then(() => {
     console.log(`【定时任务】已删除${count}条过期 ip`)
     if (count > 0) {
-      redis.setAsync('proxy_ips', JSON.stringify(rIps), 'EX', 60 * 20)
+      redis.setAsync('proxy_ips', JSON.stringify(rIps), 'EX', 60 * 60 * 48)
     }
   })
 }
