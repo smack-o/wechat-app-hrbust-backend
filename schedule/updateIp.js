@@ -1,7 +1,7 @@
 const schedule = require('node-schedule')
 const request = require('request')
 // const redis = require('redis')
-const ReqSpider = require('../utils/ReqSpider')
+const ReqSpider = require('../utils/reqSpider')
 const { redis } = require('../utils')
 const config = require('../config/config')
 
