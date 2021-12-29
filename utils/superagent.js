@@ -1,6 +1,9 @@
 // const sa = require('superagent');
 const charset = require('superagent-charset')
-const sa = charset(require('superagent'))
+const superagent = charset(require('superagent'))
+const { redis } = require('./');
+require('superagent-proxy')(superagent);
+
 const uuidv4 = require('uuid/v4');
 
 const queue = {};
@@ -8,6 +11,18 @@ const queue = {};
 const MAX_MOUNT = 2;
 
 let executing = false;
+
+const getIp = async () => {
+  let ips = await redis.getAsync('proxy_ips');
+  if (!ips) {
+    return null;
+  }
+  ips = Object.keys(JSON.parse(ips));
+  const len = ips.length;
+  const index = parseInt(Math.random() * len)
+  console.log(len, index)
+  return ips[index];
+}
 
 const exeQueue = async () => {
   let list = Object.keys(queue);
@@ -38,12 +53,17 @@ const delay = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)
 function executingQueue(fn) {
   const promise = new Promise((resolve, reject) => {
     const id = uuidv4();
-    queue[id] = () => {
-      const req = Promise.all([delay(3000), fn().then((res) => {
+    queue[id] = async () => {
+      const ip = await getIp();
+      console.log(ip)
+      const req = Promise.all([delay(3000), fn(superagent, ip).then((res) => {
         resolve(res)
-      }).catch(reject)])
+      }).catch((err) => {
+        console.error(err)
+        reject()
+      })])
 
-      return Promise.race([delay(10000).then(() => {
+      return Promise.race([delay(100000).then(() => {
         return Promise.resolve('Timeout')
       }), req]).then((res) => {
         if (res === 'Timeout') {

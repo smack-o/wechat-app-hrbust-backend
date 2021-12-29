@@ -1,4 +1,3 @@
-const superagent = require('superagent')
 const cheerio = require('cheerio')
 const executingQueue = require('../../utils/superagent')
 
@@ -105,8 +104,9 @@ const getWeek = async (ctx) => {
   if (weekRedis) {
     weekData = JSON.parse(weekRedis)
   } else {
-    const response = await executingQueue(() => superagent
+    const response = await executingQueue((superagent, ip) => superagent
       .get(url.indexListLeft)
+      .proxy(ip)
       .charset()
       .set(requestHeader)
       .catch(e => ctx.throw(400, e)))

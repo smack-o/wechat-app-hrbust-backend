@@ -1,6 +1,6 @@
 const cheerio = require('cheerio')
 const charset = require('superagent-charset')
-const superagent = charset(require('superagent'))
+// const superagent = charset(require('superagent'))
 const executingQueue = require('./superagent');
 const moment = require('moment')
 const fs = require('fs')
@@ -140,8 +140,9 @@ class SimulateLogin {
   // 检查是否登录，并返回当前学期、周数
   checkCookie() {
     return new Promise(resolve => {
-      executingQueue(() => superagent
+      executingQueue((superagent, ip) => superagent
         .get(url.indexListLeft)
+        .proxy(ip)
         .charset()
         .set(requestHeader)
         .set('Cookie', this.cookie)
@@ -177,8 +178,9 @@ class SimulateLogin {
 
   // 获取 cookie
   getCookie() {
-    return executingQueue(() => superagent
+    return executingQueue((superagent, ip) => superagent
       .post(url.login_url)
+      .proxy(ip)
       .set(requestHeader)
       .redirects(0)
     ).then((res) => {
@@ -195,13 +197,15 @@ class SimulateLogin {
 
   // 获取验证码
   getCaptchaBuffer() {
-    return executingQueue(() => superagent
-      .get(url.captcha_url)
+    return executingQueue((superagent, ip) => superagent
+      .get(`${url.captcha_url}?${Math.random()}`)
+      .proxy(ip)
       .buffer(true)
       .set(requestHeader)
       .set('Cookie', this.cookie)
     ).then(response => {
       const dataBuffer = Buffer.from(response.body, 'base64')
+
       return Promise.resolve(dataBuffer)
     })
       .catch(error => {
@@ -248,8 +252,9 @@ class SimulateLogin {
 
   // 登录处理
   loginHandler() {
-    return executingQueue(() => superagent
+    return executingQueue((superagent, ip) => superagent
       .post(url.check_url)
+      .proxy(ip)
       .send({
         j_username: this.username,
         j_password: this.password,
@@ -284,8 +289,9 @@ class SimulateLogin {
 
   // 登录成功更新数据库信息
   getName() {
-    return executingQueue(() => superagent
+    return executingQueue((superagent, ip) => superagent
       .get(url.indexHeader)
+      .proxy(ip)
       .charset()
       .set(requestHeader)
       .set('Cookie', this.cookie))
@@ -300,8 +306,9 @@ class SimulateLogin {
   // 登录错误处理
   errorHandler() {
     const promise = new Promise((resove, reject) => {
-      executingQueue(() => superagent
+      executingQueue((superagent, ip) => superagent
         .get(url.loginError)
+        .proxy(ip)
         .charset()
         .set(requestHeader)
         .set('Cookie', this.cookie)

@@ -1,5 +1,4 @@
 const crypto = require('crypto')
-const superagent = require('superagent')
 const cheerio = require('cheerio')
 const executingQueue = require('../../utils/superagent')
 const to = require('../../utils/awaitErrorCatch')
@@ -52,8 +51,9 @@ const getPeriod = (startWeek, endWeek, weekType = 0, normalWeekArray) => {
 }
 
 // 获取学生id，获取课程表的时候需要用到
-const getStudentId = cookie => executingQueue(() => superagent
+const getStudentId = cookie => executingQueue((superagent, ip) => superagent
   .get(url.studentId)
+  .proxy(ip)
   .charset()
   .set(requestHeader)
   .set('Cookie', cookie))
@@ -166,8 +166,9 @@ const updateCourse = async (ctx) => {
   // cookie = loginResult.cookie
 
   const getCourseUrl = await getStudentId(cookie)
-  let response = await executingQueue(() => superagent
+  let response = await executingQueue((superagent, ip) => superagent
     .get(`${getCourseUrl}&termid=${termid}&yearid=${yearid}`)
+    .proxy(ip)
     .charset()
     .set(requestHeader)
     .set('Cookie', cookie))
@@ -192,8 +193,9 @@ const updateCourse = async (ctx) => {
     term = currentTerm
     yearid = parseInt(currentGrade) + 20 + Math.ceil(currentTerm / 2)
 
-    response = await executingQueue(() => superagent
+    response = await executingQueue((superagent, ip) => superagent
       .get(`${getCourseUrl}&termid=${termid}&yearid=${yearid}`)
+      .proxy(ip)
       .charset()
       .set(requestHeader)
       .set('Cookie', cookie))

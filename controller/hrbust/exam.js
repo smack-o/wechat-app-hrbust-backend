@@ -1,4 +1,4 @@
-const superagent = require('superagent')
+
 const cheerio = require('cheerio')
 const moment = require('moment')
 const executingQueue = require('../../utils/superagent')
@@ -39,7 +39,8 @@ const getExam = async (ctx) => {
   const { page = 1 } = ctx.query
   const curl = `${url.exam_url}?pagingPageVLID=${page || 1}&pagingNumberPerVLID=10&sortDirectionVLID=-1&sortColumnVLID=s.examRoom.exam.endTime&`
 
-  const response = await executingQueue(() => superagent
+  const response = await executingQueue((superagent, ip) => superagent
+    .proxy(ip)
     .post(curl)
     .charset()
     .set(requestHeader)

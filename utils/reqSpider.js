@@ -8,11 +8,10 @@ const request = require("request");
 
 const cheerio = require('cheerio');
 
-const ips = [{ "ip": "1.62.160.56", "port": 57627 }, { "ip": "1.59.172.184", "port": 39577 }, { "ip": "1.62.151.58", "port": 29701 }, { "ip": "221.210.31.239", "port": 51630 }, { "ip": "221.208.39.3", "port": 50964 }, { "ip": "122.159.109.73", "port": 45147 }, { "ip": "122.159.97.121", "port": 41039 }]
+const delay = require('./delay');
 
 
-
-class reqSpider {
+class ReqSpider {
   constructor(option) {
     this.proxy_list = [];
     this.reConnt = 0;
@@ -46,16 +45,24 @@ class reqSpider {
   /*
       @测试代理IP是否可用
   */
-  test_proxy(ip) {
+  async test_proxy(ip) {
+    // console.log(ip)
     return new Promise((resolve, reject) => {
-      request.get({
-        url: "http://www.baidu.com",
-        proxy: "http://" + ip
-      }, (err, res, body) => {
-        console.log('---------')
-        if (err) { resolve(false) };
+
+      const req = request.get({
+        url: "http://jwzx.hrbust.edu.cn/academic/getCaptcha.do",
+        proxy: ip
+      }, (err, res) => {
+        if (err || res.statusCode !== 200) { resolve(false) };
+        // console.log(res)
         resolve(true);
       })
+
+      delay(5000).then(() => {
+        // console.log('timeout');
+        req.abort();
+        resolve(false);
+      });
     })
   }
   /*
@@ -91,12 +98,12 @@ class reqSpider {
   */
   get_proxy() {
     //使用了https://www.freeip.top/?page=1 免费代理
-    console.log(1);
+    // console.log(1);
     return new Promise((resolve, reject) => {
       request.get({
         url: "http://api.shenlongip.com/ip"
       }, function (e, r, b) {
-        console.log(e, r, b)
+        // console.log(e, r, b)
         if (e) { return [] };
         var $ = cheerio.load(b);
         let td = $(".ip-tables").find(".layui-table tbody tr");
@@ -105,20 +112,20 @@ class reqSpider {
           let ip = $(td).eq(i).find("td").eq(0).text() + ":" + $(td).eq(i).find("td").eq(1).text();
           ips.push(ip);
         }
-        console.log(ips);
+        // console.log(ips);
         resolve(ips);
       })
     })
   }
 }
 
+module.exports = ReqSpider;
+// const A = new ReqSpider();
 
-const A = new reqSpider();
-
-ips.forEach((res) => {
-  console.log(1)
-  A.test_proxy(res.ip + ':' + res.port).then(a => console.log(a))
-})
+// ips.forEach((res) => {
+//   console.log(1)
+//   A.test_proxy(res.ip + ':' + res.port).then(a => console.log(a))
+// })
 
 // // console.log(A.set_proxy());
 // A.get_proxy().then((res) => {

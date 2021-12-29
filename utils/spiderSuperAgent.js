@@ -2,7 +2,7 @@ const superagent = require('superagent')
 require('superagent-proxy')(superagent);
 // const ips = [{ "ip": "1.62.160.56", "port": 57627 }, { "ip": "1.59.172.184", "port": 39577 }, { "ip": "1.62.151.58", "port": 29701 }, { "ip": "221.210.31.239", "port": 51630 }, { "ip": "221.208.39.3", "port": 50964 }, { "ip": "122.159.109.73", "port": 45147 }, { "ip": "122.159.97.121", "port": 41039 }];
 
-// class reqSpider {
+// class ReqSpider {
 //   constructor(option) {
 //     this.proxy_list = [];
 //     this.reConnt = 0;
@@ -102,7 +102,7 @@ require('superagent-proxy')(superagent);
 //   }
 // }
 
-// const A = new reqSpider();
+// const A = new ReqSpider();
 // ips.forEach((res) => {
 //   A.test_proxy(res.ip + ':' + res.port).then((r) => {
 //     console.log(r, '==============')
