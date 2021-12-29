@@ -40,8 +40,8 @@ const getExam = async (ctx) => {
   const curl = `${url.exam_url}?pagingPageVLID=${page || 1}&pagingNumberPerVLID=10&sortDirectionVLID=-1&sortColumnVLID=s.examRoom.exam.endTime&`
 
   const response = await executingQueue((superagent, ip) => superagent
-    .proxy(ip)
     .post(curl)
+    .proxy(ip)
     .charset()
     .set(requestHeader)
     .set('Cookie', cookie))
