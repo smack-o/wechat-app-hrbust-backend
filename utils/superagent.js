@@ -59,7 +59,6 @@ function executingQueue(fn) {
       const req = Promise.all([delay(3000), fn(superagent, ip).then((res) => {
         resolve(res)
       }).catch((err) => {
-        console.error(err)
         reject(err)
       })])
 
