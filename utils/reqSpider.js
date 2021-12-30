@@ -50,7 +50,7 @@ class ReqSpider {
     return new Promise((resolve, reject) => {
 
       const req = request.get({
-        url: "http://jwzx.hrbust.edu.cn/academic/getCaptcha.do",
+        url: "http://jwzx.hrbust.edu.cn/academic/listLeft.do",
         proxy: ip
       }, (err, res) => {
         if (err || res.statusCode !== 200) { resolve(false) };
