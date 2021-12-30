@@ -58,7 +58,7 @@ class ReqSpider {
         resolve(true);
       })
 
-      delay(5000).then(() => {
+      delay(2500).then(() => {
         // console.log('timeout');
         req.abort();
         resolve(false);
