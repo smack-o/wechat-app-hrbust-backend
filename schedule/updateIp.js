@@ -92,7 +92,7 @@ const removeIp = async () => {
 const scheduleAddIp = () => {
   // 每分钟的第30秒定时执行一次:
   getIp()
-  schedule.scheduleJob('0 */5 * * * *', () => {
+  schedule.scheduleJob('0 */3 * * * *', () => {
     // console.log(`scheduleCronstyle:${new Date()}`)
     getIp()
   })
