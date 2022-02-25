@@ -156,7 +156,8 @@ class SimulateLogin {
             const $ = cheerio.load(body)
             const result = $('#date span').text()
             const thisWeek = result.replace(/\s/g, '')
-            this.week = thisWeek.match(/第(\w*)周/)[1] ? parseInt(thisWeek.match(/第(\w*)周/)[1]) : 1
+            const weekMatch = thisWeek.match(/第(\w*)周/) || []
+            this.week = weekMatch[1] ? parseInt(weekMatch[1]) : 1
             const terms = thisWeek.match(/(\w*)(秋|春)/)
             this.year = parseInt(terms[1]) - 1980
             const termsObj = {
