@@ -10,3 +10,5 @@ python/__pycache__/
 
 config/config.js
 smackgg-config
+
+dump.rdb
