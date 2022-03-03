@@ -223,6 +223,10 @@ const updateCourse = async (ctx) => {
 
         // 拆分课表方式变更，使用破折号区分课程，每个课表标题都是 << *** >>
         let splitArr = html.split('<<')
+        // 兼容部分课表分割问题
+        if (splitArr.length === 0) {
+          splitArr = html.split('&lt;&lt;')
+        }
         splitArr.shift()
 
         if (splitArr.length === 0 || !splitArr[0]) {
