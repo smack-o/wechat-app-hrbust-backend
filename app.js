@@ -106,13 +106,14 @@ app.use(views(`${__dirname}/views`, {
 
 // error wrapper
 app.use(async (ctx, next) => {
-  ctx.session.count = ctx.session.count ? ctx.session.count + 1 : 1
   try {
     if (ctx.request.path.indexOf('/api/hrbust') >= 0 && !ctx.session.openid) {
       // 未登录
       ctx.throw(401, '微信登录失效')
       return
     }
+    // 登录之后记录 count
+    ctx.session.count = ctx.session.count ? ctx.session.count + 1 : 1
     await next()
   } catch (e) {
     switch (e.status) {
