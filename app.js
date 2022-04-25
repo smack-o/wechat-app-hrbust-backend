@@ -8,13 +8,48 @@ const onerror = require('koa-onerror')
 // const bodyparser = require('koa-bodyparser')
 const body = require('koa-better-body')
 const logger = require('koa-logger')
-const session = require('koa-session-minimal')
+// const session = require('koa-session-minimal')
 const proxy = require('koa-proxies')
 // const request = require('request')
-const MongoStore = require('koa-generic-session-mongo')
+// const MongoStore = require('koa-generic-session-mongo')
+const session = require('koa-session')
+// const session = require('koa-generic-session')
+// const redisStore = require('koa-redis')
 const moment = require('moment')
 const { keys } = require('./config/config')
-const { mongodb } = require('./utils')
+
+const { redis } = require('./utils/redis')
+// const { mongodb } = require('./utils')
+const SESSION = 'SESSION'
+
+const CONFIG = {
+  key: 'SESSION_ID', /** (string) cookie key (default is koa.sess) */
+  maxAge: 24 * 60 * 60 * 1000,
+  httpOnly: true,
+  encrypt: false,
+  signed: false,
+  renew: true,
+  store: {
+    async get (key) {
+      const res = await redis.get(`${SESSION}:${key}`)
+      if (!res) return null
+      return JSON.parse(res)
+    },
+
+    async set (key, value, maxAge) {
+      maxAge = typeof maxAge === 'number' ? maxAge : 30 * 24 * 60 * 60 * 1000
+      value = JSON.stringify(value)
+      await redis.set(`${SESSION}:${key}`, value, 'PX', maxAge)
+    },
+
+    async destroy (key) {
+      await redis.set.del(`${SESSION}:${key}`)
+    },
+  },
+  logValue: true,
+}
+
+app.use(session(CONFIG, app))
 
 // middleware
 app.use(proxy('/homepage', {
@@ -39,11 +74,22 @@ onerror(app)
 
 app.keys = keys
 
-app.use(session({
-  store: new MongoStore({
-    url: mongodb,
-  }),
-}))
+// app.use(session({
+//   store: new MongoStore({
+//     url: mongodb,
+//   }),
+// }))
+
+// app.use(session({
+//   key: 'SESSION_ID',
+//   maxAge: 24 * 60 * 60 * 1000,
+//   httpOnly: true,
+//   encrypt: true,
+//   renew: true,
+//   store: redisStore({
+//     // Options specified here
+//   }),
+// }))
 
 // middlewares
 // app.use(bodyparser({

@@ -15,12 +15,14 @@
     "lint"
   ],
   "dependencies": {
+    "assert": "^2.0.0",
     "cheerio": "^1.0.0-rc.2",
     "co-wechat": "^2.4.0",
     "crypto": "^1.0.1",
     "debug": "^2.6.3",
     "ejs": "^2.6.1",
     "file-box": "^0.8.27",
+    "ioredis": "^5.0.4",
     "koa": "^2.2.0",
     "koa-better-body": "^3.0.4",
     "koa-bodyparser": "^3.2.0",
@@ -31,8 +33,7 @@
     "koa-onerror": "^1.2.1",
     "koa-proxies": "^0.8.1",
     "koa-router": "^7.1.1",
-    "koa-session": "^5.9.0",
-    "koa-session-minimal": "^3.0.4",
+    "koa-session": "^6.2.0",
     "koa-static": "^3.0.0",
     "koa-views": "^5.2.1",
     "md5": "^2.2.1",
@@ -52,7 +53,8 @@
     "sha1": "^1.1.1",
     "superagent": "^3.8.3",
     "superagent-charset": "^1.2.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "duoduoke-node-sdk": "^1.0.0",
