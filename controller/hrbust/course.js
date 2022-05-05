@@ -204,6 +204,7 @@ const updateCourse = async (ctx) => {
   const lessonList = []
   const lessonListUnplan = []
 
+
   $('#timetable tr') && $('#timetable tr').each((i, e) => {
     if (i === 0) {
       // 表格的第0行是周数
@@ -219,12 +220,12 @@ const updateCourse = async (ctx) => {
         // course.push(null)
       } else {
         let html = $(ele).html()
-        // html = html.replace(/(\s)|(&lt;)|(&gt;)|(;.)|(<<)|(>>)|(一下午<br>)|(一上午<br>)/g, '')
 
         // 拆分课表方式变更，使用破折号区分课程，每个课表标题都是 << *** >>
+
         let splitArr = html.split('<<')
         // 兼容部分课表分割问题
-        if (splitArr.length === 0) {
+        if (splitArr.length === 0 || splitArr.length === 1) {
           splitArr = html.split('&lt;&lt;')
         }
         splitArr.shift()
