@@ -245,7 +245,7 @@ const updateCourse = async (ctx) => {
           }
 
           const course = {}
-          const week = arr[3]
+          const week = arr[3] || ''
 
           // 课表有六种情况
           // normal  1-12周

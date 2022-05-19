@@ -68,10 +68,18 @@ function createClient(config) {
   return client;
 }
 
+const PRODUCTION = process.env.NODE_ENV === 'production'
 
-exports.redis = createClient({
+let redisConfig = PRODUCTION ? {
   host: config.redis.host,
   port:  config.redis.port,
   password: config.redis.password,
   db: config.redis.db,
-})
+} : {
+  host: 'localhost',
+  port: 6379,
+  password: '',
+  db: 0,
+}
+
+exports.redis = createClient(redisConfig)
