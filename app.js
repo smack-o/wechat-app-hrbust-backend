@@ -43,7 +43,7 @@ const CONFIG = {
     },
 
     async destroy (key) {
-      await redis.set.del(`${SESSION}:${key}`)
+      await redis.del(`${SESSION}:${key}`)
     },
   },
   logValue: true,
