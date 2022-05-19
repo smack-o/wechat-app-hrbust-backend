@@ -241,11 +241,11 @@ const updateCourse = async (ctx) => {
 
           // 没有安排上课时间的课程
           if (!arr[4] && /周/.test(arr[2])) {
-            arr = [arr[0], '暂无教室安排', ...arr.slice(1, arr.length - 1)]
+            arr = [arr[0], '暂无教室安排', ...arr.slice(1)]
           }
 
           const course = {}
-          const week = arr[3] || ''
+          const week = arr[3]
 
           // 课表有六种情况
           // normal  1-12周
