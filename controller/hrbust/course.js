@@ -254,14 +254,40 @@ const updateCourse = async (ctx) => {
           // one 第一周
           // sub 1-7,8-10
           // 剩下一种 5,8,9-17
+          // 2022.8.26 新增类型 1-9单,13-15单
           const regNormalWeek = /(\w*)\-(\w*)周/
-          const regSingleWeek = /(\w*)\-(\w*)单周/
-          const regDoubleWeek = /(\w*)\-(\w*)双周/
+          const regSingleWeek = /(\w*)\-(\w*)单周?/
+          const regDoubleWeek = /(\w*)\-(\w*)双周?/
           const regOneWeek = /第(\w*)周/
           const regSubWeek = /(\w*)\-(\w*),(\w*)\-(\w*)/
 
           let periodObj = {}
-          if (regOneWeek.test(week)) {
+
+          const getSingleOrDouble = (str) => {
+            if (regSingleWeek.test(str)) {
+              return 1
+            }
+            if (regDoubleWeek.test(str)) {
+              return 2
+            }
+            return 0
+          }
+
+          if (regSubWeek.test(week)) {
+            //  5,8,9-17
+            //  1-9单,13-15单
+            const matchResult = week.match(regSubWeek)
+            const firstStartWeek = parseInt(matchResult[1])
+            const firstEndWeek = parseInt(matchResult[2])
+            const secondStartWeek = parseInt(matchResult[3])
+            const secondEndWeek = parseInt(matchResult[4])
+
+            const [s1, s2] = week.split(',')
+
+            let firstPeriodObj = getPeriod(firstStartWeek, firstEndWeek, getSingleOrDouble(s1))
+            let secondPeriodObj = getPeriod(secondStartWeek, secondEndWeek, getSingleOrDouble(s2))
+            periodObj = Object.assign({}, firstPeriodObj, secondPeriodObj)
+          } else if (regOneWeek.test(week)) {
             periodObj[week.match(regOneWeek)[1]] = 1
           } else if (regNormalWeek.test(week)) {
             const matchResult = week.match(regNormalWeek)
@@ -278,15 +304,6 @@ const updateCourse = async (ctx) => {
             const startWeek = parseInt(matchResult[1])
             const endWeek = parseInt(matchResult[2])
             periodObj = getPeriod(startWeek, endWeek, 2)
-          } else if (regSubWeek.test(week)) {
-            const matchResult = week.match(regSubWeek)
-            const firstStartWeek = parseInt(matchResult[1])
-            const firstEndWeek = parseInt(matchResult[2])
-            const secondStartWeek = parseInt(matchResult[3])
-            const secondEndWeek = parseInt(matchResult[4])
-            let firstPeriodObj = getPeriod(firstStartWeek, firstEndWeek, 0)
-            let secondPeriodObj = getPeriod(secondStartWeek, secondEndWeek, 0)
-            periodObj = Object.assign({}, firstPeriodObj, secondPeriodObj)
           } else {
             const normalWeekArray = week.split(',')
             const startEndArray = normalWeekArray.pop().split('-')
