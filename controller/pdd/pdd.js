@@ -121,13 +121,13 @@ const keywords = async (ctx) => {
 
 const channels = [{
   title: '宿舍用低功率吹风机',
-  goods_sign_list: ['c9f2hBzZgshO-oLxwvbYu2IcGe03_J4rj9CVCu', 'c932sYS7etBO-oLxwvbYuyqrO073_JQx42SDhZG', 'c9L2tzGAVQpO-oLxwvbYu0VhJ_RE_JilyNQDYx', 'c9X2i6fVhLhO-oLxwvbYu9cOKVbG_JC2LiH4u2', 'c9z2h9Vv9FJO-oLxwvbYuxqo1pyR_JaoDpcGAj'],
-}, {
-  title: '寝室壁纸海报',
-  goods_sign_list: ['c9b2u7sfectO-oLxwvbYu_UVJssU_JFDXa5EvD', 'c9b2tbZhMV5O-oLxwvbYu5Z-IoYR_JPzus9kod', 'c972u7nnB6lO-oLxwvbYu33FIFWa_Jj44m54ZG', 'c9r2uKjUYg1O-oLxwvbYuzqP2yYq_JiEzh2kbB', 'c9L2hX1FCHZO-oLxwvbYu-z3LoRn_JQQ4Ulngx2', 'c972iftxDa5O-oLxwvbYu6YVKEai_JOz2AM7Mo'],
+  goods_sign_list: ['E9L2jYmd7CFO-oLxwvbbahHH9IsL333L_JQgHVYSloN', 'E9r25aeClCZO-oLxwvbbahANO1Qs5mMy_JQzHKUKlL3', 'E9_26vwrsGFO-oLxwvbbakWrL-NPbxYy_J2RgZ3sQj', 'E9v284rm631O-oLxwvbbatAL3lUR90q__JiBcy2Wza'],
 }, {
   title: '酷毙灯/小夜灯',
-  goods_sign_list: ['c932g3qET0RO-oLxwvbYuxTy9hzz_JpU7APU47', 'c9_2i0b1LztO-oLxwvbYu4SBXtaE_J1gy81f7B', 'c9r2hK6nfcpO-oLxwvbYu_sLsuuZ_JQ0wxo4WSU', 'c9L2hZkMG81O-oLxwvbYuxQMj92q_JJLFzjEtG'],
+  goods_sign_list: ['E9D2imLDQcZO-oLxwvbbau3J94W5FlKq_JwPRqPqay', 'E9D2l9d_O_FO-oLxwvbbaqk0seiajIPz_JQT9u5nxgO', 'E9T2nVvcRuZO-oLxwvbbav_D4MxctReT_JQ4xFonvCd', 'E932vbA96_FO-oLxwvbbaofSL78PsoYf_JQw89TlKil', 'E9D2_3MNUp5O-oLxwvbbatEReUX3qgI8_JYIAYGVgL', 'E9j2-jAC3eFO-oLxwvbbanxmcaGhHtlS_JQq1Tk4Tdl'],
+}, {
+  title: '寝室壁纸海报',
+  goods_sign_list: ['E9L2gfWu6mdO-oLxwvbbavFIKgzg0wwx_JQFDalKRMT', 'E9H25OxhPbRO-oLxwvbbaoisCySjRQqF_JxmM1qrAC', 'E9D25_qdLI1O-oLxwvbbapoy_--d9gUJ_Jv0PR0i3X', 'c9r2uKjUYg1O-oLxwvbYuzqP2yYq_JiEzh2kbB', 'c9L2hX1FCHZO-oLxwvbYu-z3LoRn_JQQ4Ulngx2', 'c972iftxDa5O-oLxwvbYu6YVKEai_JOz2AM7Mo'],
 }]
 
 
