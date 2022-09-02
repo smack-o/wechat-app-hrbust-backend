@@ -128,6 +128,12 @@ const channels = [{
 }, {
   title: '寝室壁纸海报',
   goods_sign_list: ['E9L2gfWu6mdO-oLxwvbbavFIKgzg0wwx_JQFDalKRMT', 'E9H25OxhPbRO-oLxwvbbaoisCySjRQqF_JxmM1qrAC', 'E9D25_qdLI1O-oLxwvbbapoy_--d9gUJ_Jv0PR0i3X', 'c9r2uKjUYg1O-oLxwvbYuzqP2yYq_JiEzh2kbB', 'c9L2hX1FCHZO-oLxwvbYu-z3LoRn_JQQ4Ulngx2', 'c972iftxDa5O-oLxwvbYu6YVKEai_JOz2AM7Mo'],
+}, {
+  title: '毛巾',
+  goods_sign_list: ['E972kTSDbd5O-oLxwvbbatOeLxb5uWfc_JQUkIsb1Fi', 'E9z294b8Ml9O-oLxwvbbaq1OIDYZwqZ5_JtrHgdpex', 'E9H29LEQNshO-oLxwvbbam__9JlzhfVF_J7zhMJyl3', 'E9f2gyFbYJVO-oLxwvbbaiLoZ47XopCB_JQS9lvpWG5'],
+}, {
+  title: '衣架',
+  goods_sign_list: ['E932-ns8Q6NO-oLxwvbbaoW-0R16wJdS_Jfnmy2YUl', 'E9X2mW4SvBBO-oLxwvbbakhZ-a1_IsIy_JRNQTia24', 'E9P24GEoYYJO-oLxwvbbasDEPoNvRwaD_JQXYPYCcfo', 'E9f29K4CYSlO-oLxwvbbaps-rPWuvWNR_J2TpLZpTy', 'E9L2-IqPG4lO-oLxwvbbaqKoFWlEc_hi_JJxwTJJea'],
 }]
 
 
