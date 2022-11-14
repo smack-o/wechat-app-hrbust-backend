@@ -78,11 +78,11 @@ mongoose
   })
   .catch(debugEr)
 
-const redisClient = redis.createClient()
+// const redisClient = redis.createClient()
 
-// if you'd like to select database 3, instead of 0 (default), call
-// client.select(3, function() { /* ... */ });
+// // if you'd like to select database 3, instead of 0 (default), call
+// // client.select(3, function() { /* ... */ });
 
-redisClient.on('error', (err) => {
-  console.log(`Error${err}`)
-})
+// redisClient.on('error', (err) => {
+//   console.log(`Error${err}`)
+// })
