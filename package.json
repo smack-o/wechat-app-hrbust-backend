@@ -30,7 +30,7 @@
     "koa-generic-session-mongo": "^0.4.0",
     "koa-json": "^2.0.2",
     "koa-logger": "^2.0.1",
-    "koa-onerror": "^1.2.1",
+    "koa-onerror": "^4.2.0",
     "koa-proxies": "^0.8.1",
     "koa-router": "^7.1.1",
     "koa-session": "^6.2.0",
