@@ -78,7 +78,9 @@ class SimulateLogin {
       cookie = '',
       captcha = '',
       openid = '',
+      ctx,
     } = option
+    this.ctx = ctx
     this.autoCaptcha = autoCaptcha
     this.username = username
     this.password = password
@@ -400,6 +402,7 @@ const checkLogin = async (ctx, option = { autoCaptcha: false }) => {
     autoCaptcha,
     captcha,
     simulateIp: ctx.ip,
+    ctx,
   })
 
   // 验证码登录
