@@ -11,8 +11,7 @@ const login = async (ctx) => {
   if (!captcha) {
     ctx.throw(400, '请输入验证码')
   }
-  if (!username || !password)
-    ctx.throw(400, '请求参数错误，登录需要用户名和密码')
+  if (!username || !password) ctx.throw(400, '请求参数错误，登录需要用户名和密码')
   const { hrbustCookie, openid } = ctx.session
 
   try {
@@ -123,10 +122,9 @@ const getWeek = async (ctx) => {
     const $ = cheerio.load(body)
     const result = $('#date span').text()
     const thisWeek = result.replace(/\s/g, '')
-    const week =
-      thisWeek && thisWeek.match(/第(\w*)周/) && thisWeek.match(/第(\w*)周/)[1]
-        ? parseInt(thisWeek.match(/第(\w*)周/)[1])
-        : 1
+    const week = thisWeek && thisWeek.match(/第(\w*)周/) && thisWeek.match(/第(\w*)周/)[1]
+      ? parseInt(thisWeek.match(/第(\w*)周/)[1])
+      : 1
     // eslint-disable-next-line
     const [f, onlineYear, onlineQuarter] = thisWeek.match(/(\w*)(秋|春)/)
 
