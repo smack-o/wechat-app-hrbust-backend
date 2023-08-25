@@ -16,10 +16,11 @@ const requestHeader = {
   'Accept-Encoding': 'gzip, deflate',
   Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-  'Host': 'jwzx.hrbust.edu.cn',
-  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
-
+  Accept:
+    'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+  Host: 'jwzx.hrbust.edu.cn',
+  'User-Agent':
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36',
 }
 // const getCaptcha = require('./captcha.js')
 // const mongoUtils = require('../../spider/mongoUtils')
@@ -35,25 +36,32 @@ const url = {
   indexHeader: 'http://jwzx.hrbust.edu.cn/academic/showHeader.do',
   indexListLeft: 'http://jwzx.hrbust.edu.cn/academic/listLeft.do',
   index_new: 'http://jwzx.hrbust.edu.cn/academic/index_new.jsp',
-  studentId: 'http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?year=40&term=2',
-  loginError: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp?login_error=1',
-  grade_url: 'http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020',
-  exam_url: 'http://jwzx.hrbust.edu.cn/academic/manager/examstu/studentQueryAllExam.do',
-  news_url: 'http://jwzx.hrbust.edu.cn/homepage/infoArticleList.do?columnId=354',
+  studentId:
+    'http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?year=40&term=2',
+  loginError:
+    'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp?login_error=1',
+  grade_url:
+    'http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020',
+  exam_url:
+    'http://jwzx.hrbust.edu.cn/academic/manager/examstu/studentQueryAllExam.do',
+  news_url:
+    'http://jwzx.hrbust.edu.cn/homepage/infoArticleList.do?columnId=354',
   news_detail_url: 'http://jwzx.hrbust.edu.cn/homepage/infoSingleArticle.do?',
-  roomschedule_url: 'http://jwzx.hrbust.edu.cn/academic/teacher/teachresource/roomschedule_week.jsdo',
-  roomschedulequery: 'http://jwzx.hrbust.edu.cn/academic/teacher/teachresource/roomschedulequery.jsdo'
+  roomschedule_url:
+    'http://jwzx.hrbust.edu.cn/academic/teacher/teachresource/roomschedule_week.jsdo',
+  roomschedulequery:
+    'http://jwzx.hrbust.edu.cn/academic/teacher/teachresource/roomschedulequery.jsdo',
 }
 
 /**
  * new SimulateLogin(arguments)
  * SimulateLogin return a cookie
  * @param {object}
-   * @param {string} username   用户名
-   * @param {string} password   密码
-   * @param {string} cookie     理工的cookie信息
-   * @param {string} simulateIp
-   * @param {string} captcha
+ * @param {string} username   用户名
+ * @param {string} password   密码
+ * @param {string} cookie     理工的cookie信息
+ * @param {string} simulateIp
+ * @param {string} captcha
  */
 
 class SimulateLogin {
@@ -77,6 +85,8 @@ class SimulateLogin {
     if (simulateIp) {
       requestHeader['X-Forwarded-For'] = simulateIp
     }
+
+    console.log(simulateIp, 'simulateIp')
   }
 
   async login() {
@@ -101,10 +111,12 @@ class SimulateLogin {
     this.discernCount += 1
     if (this.discernCount > 40) {
       // 自动识别超过30次，就不再自动识别了
-      return Promise.reject((getErrorData({
-        message: '自动识别验证码次数过多',
-        code: 400002,
-      })))
+      return Promise.reject(
+        getErrorData({
+          message: '自动识别验证码次数过多',
+          code: 400002,
+        })
+      )
     }
     const captchaData = await this.discernCaptchaHandler()
     // console.log(captchaData)
@@ -124,10 +136,12 @@ class SimulateLogin {
         return this.autoDiscernCaptcha()
       }
 
-      return Promise.reject((getErrorData({
-        error: e,
-        code: 400002,
-      })))
+      return Promise.reject(
+        getErrorData({
+          error: e,
+          code: 400002,
+        })
+      )
     }
     return result
   }
@@ -142,7 +156,7 @@ class SimulateLogin {
 
   // 检查是否登录，并返回当前学期、周数
   checkCookie() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       superagent
         .get(url.indexListLeft)
         .charset()
@@ -181,6 +195,7 @@ class SimulateLogin {
 
   // 获取 cookie
   getCookie() {
+    console.log(requestHeader, 'requestHeader')
     return superagent
       .post(url.login_url)
       .set(requestHeader)
@@ -189,11 +204,13 @@ class SimulateLogin {
         this.cookie = res.headers['set-cookie'][0].split(';')[0]
         return Promise.resolve(this.cookie)
       })
-      .catch(error => {
-        return Promise.reject((getErrorData({
-          error,
-          code: 400004,
-        })))
+      .catch((error) => {
+        return Promise.reject(
+          getErrorData({
+            error,
+            code: 400004,
+          })
+        )
       })
   }
 
@@ -204,48 +221,59 @@ class SimulateLogin {
       .buffer(true)
       .set(requestHeader)
       .set('Cookie', this.cookie)
-      .then(response => {
+      .then((response) => {
         const dataBuffer = Buffer.from(response.body, 'base64')
         return Promise.resolve(dataBuffer)
       })
-      .catch(error => {
-        Promise.reject(getErrorData({
-          error,
-          code: 400003,
-        }))
+      .catch((error) => {
+        Promise.reject(
+          getErrorData({
+            error,
+            code: 400003,
+          })
+        )
       })
   }
 
   // 验证码识别
   async discernCaptchaHandler() {
     const buffer = await this.getCaptchaBuffer()
-    const captchaPath = path.resolve(__dirname, `../captchaCache/${captchaCount}.jpg`)
+    const captchaPath = path.resolve(
+      __dirname,
+      `../captchaCache/${captchaCount}.jpg`
+    )
     console.warn(`captchaCount: ${captchaCount}`, buffer)
     captchaCount += 1
     return new Promise((resolve) => {
       fs.writeFile(captchaPath, buffer, (err) => {
         if (err) throw err
-        discernCaptcha(captchaPath).then((result) => {
-          fs.unlinkSync(captchaPath)
-          // 解析验证码出错
-          if (result.error || !result.text || result.predictable === 'False') {
-            // this.captcha(callback)
-            // return
+        discernCaptcha(captchaPath)
+          .then((result) => {
+            fs.unlinkSync(captchaPath)
+            // 解析验证码出错
+            if (
+              result.error ||
+              !result.text ||
+              result.predictable === 'False'
+            ) {
+              // this.captcha(callback)
+              // return
+              resolve({
+                error: '识别错误',
+              })
+            }
+            let text = ''
+            text = result && result.text ? result.text : ''
+            resolve({
+              text,
+            })
+          })
+          .catch(() => {
+            // 解析验证码出错
             resolve({
               error: '识别错误',
             })
-          }
-          let text = ''
-          text = result && result.text ? result.text : ''
-          resolve({
-            text,
           })
-        }).catch(() => {
-          // 解析验证码出错
-          resolve({
-            error: '识别错误',
-          })
-        })
       })
     })
   }
@@ -264,11 +292,19 @@ class SimulateLogin {
       .redirects(0)
       .catch(async (e) => {
         const location = e.response.headers.location
-        console.log(location, 'location');
-        if (e.response.headers['set-cookie'] && e.response.headers['set-cookie'] && e.response.headers['set-cookie'][0]) {
+        console.log(location, 'location')
+        if (
+          e.response.headers['set-cookie'] &&
+          e.response.headers['set-cookie'] &&
+          e.response.headers['set-cookie'][0]
+        ) {
           this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
         }
-        if (location === url.index || location === url.index_new || location === '/academic/index_new.jsp') {
+        if (
+          location === url.index ||
+          location === url.index_new ||
+          location === '/academic/index_new.jsp'
+        ) {
           console.warn('login good')
 
           // 获取用户名
@@ -311,10 +347,12 @@ class SimulateLogin {
         .set('Cookie', this.cookie)
         .end((error, response) => {
           if (error) {
-            return reject((getErrorData({
-              error,
-              code: 400001,
-            })))
+            return reject(
+              getErrorData({
+                error,
+                code: 400001,
+              })
+            )
           }
           const body = response.text
           const $ = cheerio.load(body)
@@ -330,10 +368,12 @@ class SimulateLogin {
             code = 400007
           }
 
-          return reject(getErrorData({
-            message: errorText,
-            code,
-          }))
+          return reject(
+            getErrorData({
+              message: errorText,
+              code,
+            })
+          )
         })
     })
     return promise
@@ -357,6 +397,7 @@ const checkLogin = async (ctx, option = { autoCaptcha: false }) => {
     password,
     autoCaptcha,
     captcha,
+    simulateIp: ctx.ip,
   })
 
   // 验证码登录

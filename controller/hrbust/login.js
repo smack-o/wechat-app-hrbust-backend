@@ -11,7 +11,8 @@ const login = async (ctx) => {
   if (!captcha) {
     ctx.throw(400, '请输入验证码')
   }
-  if (!username || !password) ctx.throw(400, '请求参数错误，登录需要用户名和密码')
+  if (!username || !password)
+    ctx.throw(400, '请求参数错误，登录需要用户名和密码')
   const { hrbustCookie, openid } = ctx.session
 
   try {
@@ -27,23 +28,30 @@ const login = async (ctx) => {
     const { name } = Login
 
     // 更新Student数据库
-    const student = await Students.findOneAndUpdate({
-      username,
-    }, {
-      username,
-      password,
-      name,
-    }, {
-      upsert: true,
-      returnNewDocument: true,
-    })
+    const student = await Students.findOneAndUpdate(
+      {
+        username,
+      },
+      {
+        username,
+        password,
+        name,
+      },
+      {
+        upsert: true,
+        returnNewDocument: true,
+      }
+    )
 
     // 同步更新User数据库，关联student
-    await Users.findOneAndUpdate({
-      openid,
-    }, {
-      student,
-    })
+    await Users.findOneAndUpdate(
+      {
+        openid,
+      },
+      {
+        student,
+      }
+    )
 
     // console.log(result)
     ctx.session.username = Login.username
@@ -64,7 +72,9 @@ const login = async (ctx) => {
 
 const getCaptcha = async (ctx) => {
   try {
-    const Login = new SimulateLogin()
+    const Login = new SimulateLogin({
+      simulateIp: ctx.ip,
+    })
     const captcha = await Login.getCaptcha()
     ctx.session.hrbustCookie = Login.cookie
     ctx.body = {
@@ -107,13 +117,16 @@ const getWeek = async (ctx) => {
       .get(url.indexListLeft)
       .charset()
       .set(requestHeader)
-      .catch(e => ctx.throw(400, e))
+      .catch((e) => ctx.throw(400, e))
 
     const body = response.text
     const $ = cheerio.load(body)
     const result = $('#date span').text()
     const thisWeek = result.replace(/\s/g, '')
-    const week = (thisWeek && thisWeek.match(/第(\w*)周/) && thisWeek.match(/第(\w*)周/)[1]) ? parseInt(thisWeek.match(/第(\w*)周/)[1]) : 1
+    const week =
+      thisWeek && thisWeek.match(/第(\w*)周/) && thisWeek.match(/第(\w*)周/)[1]
+        ? parseInt(thisWeek.match(/第(\w*)周/)[1])
+        : 1
     // eslint-disable-next-line
     const [f, onlineYear, onlineQuarter] = thisWeek.match(/(\w*)(秋|春)/)
 
@@ -149,11 +162,14 @@ const getWeek = async (ctx) => {
 // 登录处理函数
 const logout = async (ctx) => {
   const { openid } = ctx.session
-  await Users.findOneAndUpdate({
-    openid,
-  }, {
-    student: null,
-  })
+  await Users.findOneAndUpdate(
+    {
+      openid,
+    },
+    {
+      student: null,
+    }
+  )
   ctx.session = null
   ctx.body = {
     status: 200,
