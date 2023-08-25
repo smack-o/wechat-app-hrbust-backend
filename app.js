@@ -29,19 +29,19 @@ const CONFIG = {
   signed: false,
   renew: true,
   store: {
-    async get(key) {
+    async get (key) {
       const res = await redis.get(`${SESSION}:${key}`)
       if (!res) return null
       return JSON.parse(res)
     },
 
-    async set(key, value, maxAge) {
+    async set (key, value, maxAge) {
       maxAge = typeof maxAge === 'number' ? maxAge : 30 * 24 * 60 * 60 * 1000
       value = JSON.stringify(value)
       await redis.set(`${SESSION}:${key}`, value, 'PX', maxAge)
     },
 
-    async destroy(key) {
+    async destroy (key) {
       await redis.del(`${SESSION}:${key}`)
     },
   },
