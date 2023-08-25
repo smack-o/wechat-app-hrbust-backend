@@ -298,33 +298,35 @@ class SimulateLogin {
       .set('Cookie', this.cookie)
       .redirects(0)
       .catch(async (e) => {
-        const location = e.response.headers.location
-        console.log(location, 'location')
-        if (
-          e.response.headers['set-cookie'] &&
-          e.response.headers['set-cookie'] &&
-          e.response.headers['set-cookie'][0]
-        ) {
-          this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
-        }
-        if (
-          location === url.index ||
-          location === url.index_new ||
-          location === '/academic/index_new.jsp'
-        ) {
-          console.warn('login good')
+        try {
+          const location = e.response.headers.location
+          console.log(location, 'location')
+          if (
+            e.response.headers['set-cookie'] &&
+            e.response.headers['set-cookie'] &&
+            e.response.headers['set-cookie'][0]
+          ) {
+            this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
+          }
+          if (
+            location === url.index ||
+            location === url.index_new ||
+            location === '/academic/index_new.jsp'
+          ) {
+            console.warn('login good')
 
-          // 获取用户名
-          await this.getName()
-          return Promise.resolve({
-            cookie: this.cookie,
-            term: this.term,
-            year: this.year,
-            week: this.week,
-          })
-          // save student infomation to mongo
-          // this.updateMongo()
-        }
+            // 获取用户名
+            await this.getName()
+            return Promise.resolve({
+              cookie: this.cookie,
+              term: this.term,
+              year: this.year,
+              week: this.week,
+            })
+            // save student infomation to mongo
+            // this.updateMongo()
+          }
+        } catch (error) {}
         return this.errorHandler()
       })
   }
