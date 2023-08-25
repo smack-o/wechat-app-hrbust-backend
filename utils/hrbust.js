@@ -65,6 +65,10 @@ const url = {
  */
 
 class SimulateLogin {
+  requestHeader = {
+    ...requestHeader,
+  }
+
   constructor(option = {}) {
     const {
       autoCaptcha = false,
@@ -74,7 +78,9 @@ class SimulateLogin {
       cookie = '',
       captcha = '',
       openid = '',
+      ctx,
     } = option
+    this.ctx = ctx
     this.autoCaptcha = autoCaptcha
     this.username = username
     this.password = password
@@ -83,7 +89,8 @@ class SimulateLogin {
     this.openid = openid
     this.discernCount = 0
     if (simulateIp) {
-      requestHeader['X-Forwarded-For'] = simulateIp
+      this.requestHeader['X-Forwarded-For'] = simulateIp
+      console.log('simulateIp: ', simulateIp)
     }
 
     console.log(simulateIp, 'simulateIp')
@@ -160,7 +167,7 @@ class SimulateLogin {
       superagent
         .get(url.indexListLeft)
         .charset()
-        .set(requestHeader)
+        .set(this.requestHeader)
         .set('Cookie', this.cookie)
         .redirects(0)
         .end((err, response) => {
@@ -198,7 +205,7 @@ class SimulateLogin {
     console.log(requestHeader, 'requestHeader')
     return superagent
       .post(url.login_url)
-      .set(requestHeader)
+      .set(this.requestHeader)
       .redirects(0)
       .then((res) => {
         this.cookie = res.headers['set-cookie'][0].split(';')[0]
@@ -219,7 +226,7 @@ class SimulateLogin {
     return superagent
       .get(url.captcha_url)
       .buffer(true)
-      .set(requestHeader)
+      .set(this.requestHeader)
       .set('Cookie', this.cookie)
       .then((response) => {
         const dataBuffer = Buffer.from(response.body, 'base64')
@@ -287,7 +294,7 @@ class SimulateLogin {
         j_password: this.password,
         j_captcha: this.captcha,
       })
-      .set(requestHeader)
+      .set(this.requestHeader)
       .set('Cookie', this.cookie)
       .redirects(0)
       .catch(async (e) => {
@@ -327,7 +334,7 @@ class SimulateLogin {
     return superagent
       .get(url.indexHeader)
       .charset()
-      .set(requestHeader)
+      .set(this.requestHeader)
       .set('Cookie', this.cookie)
       .then(async (response) => {
         const body = response.text
@@ -343,7 +350,7 @@ class SimulateLogin {
       superagent
         .get(url.loginError)
         .charset()
-        .set(requestHeader)
+        .set(this.requestHeader)
         .set('Cookie', this.cookie)
         .end((error, response) => {
           if (error) {
@@ -398,6 +405,7 @@ const checkLogin = async (ctx, option = { autoCaptcha: false }) => {
     autoCaptcha,
     captcha,
     simulateIp: ctx.ip,
+    ctx,
   })
 
   // 验证码登录
