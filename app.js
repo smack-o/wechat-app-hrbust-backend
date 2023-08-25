@@ -1,4 +1,3 @@
-
 const Koa = require('koa')
 
 const app = new Koa()
@@ -23,26 +22,26 @@ const { redis } = require('./utils/redis')
 const SESSION = 'SESSION'
 
 const CONFIG = {
-  key: 'SESSION_ID', /** (string) cookie key (default is koa.sess) */
+  key: 'SESSION_ID' /** (string) cookie key (default is koa.sess) */,
   maxAge: 24 * 60 * 60 * 1000,
   httpOnly: true,
   encrypt: false,
   signed: false,
   renew: true,
   store: {
-    async get (key) {
+    async get(key) {
       const res = await redis.get(`${SESSION}:${key}`)
       if (!res) return null
       return JSON.parse(res)
     },
 
-    async set (key, value, maxAge) {
+    async set(key, value, maxAge) {
       maxAge = typeof maxAge === 'number' ? maxAge : 30 * 24 * 60 * 60 * 1000
       value = JSON.stringify(value)
       await redis.set(`${SESSION}:${key}`, value, 'PX', maxAge)
     },
 
-    async destroy (key) {
+    async destroy(key) {
       await redis.del(`${SESSION}:${key}`)
     },
   },
@@ -52,18 +51,22 @@ const CONFIG = {
 app.use(session(CONFIG, app))
 
 // middleware
-app.use(proxy('/homepage', {
-  target: 'http://jwzx.hrbust.edu.cn',
-  changeOrigin: true,
-  // agent: new httpsProxyAgent('http://1.2.3.4:88'), // if you need or just delete this line
-  // rewrite: path => path.replace(/\/homepage/, ''),
-  logs: false,
-}))
+app.use(
+  proxy('/homepage', {
+    target: 'http://jwzx.hrbust.edu.cn',
+    changeOrigin: true,
+    // agent: new httpsProxyAgent('http://1.2.3.4:88'), // if you need or just delete this line
+    // rewrite: path => path.replace(/\/homepage/, ''),
+    logs: false,
+  })
+)
 
-app.use(body({
-  multipart: true,
-  querystring: require('qs'),
-}))
+app.use(
+  body({
+    multipart: true,
+    querystring: require('qs'),
+  })
+)
 
 // const WXBizDataCrypt = require('../../utils/WXBizDataCrypt')
 app.proxy = true
@@ -100,9 +103,11 @@ app.use(json())
 app.use(logger())
 app.use(require('koa-static')(`${__dirname}/public`))
 
-app.use(views(`${__dirname}/views`, {
-  extension: 'ejs',
-}))
+app.use(
+  views(`${__dirname}/views`, {
+    extension: 'ejs',
+  })
+)
 
 // error wrapper
 app.use(async (ctx, next) => {
@@ -168,7 +173,7 @@ const routes = {
 // app.use(index.routes(), index.allowedMethods())
 // app.use(users.routes(), users.allowedMethods())
 
-Object.keys(routes).forEach(key => {
+Object.keys(routes).forEach((key) => {
   const route = routes[key]
   app.use(route.routes(), route.allowedMethods())
 })
