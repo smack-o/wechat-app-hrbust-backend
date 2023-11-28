@@ -37,7 +37,7 @@ const options = {
 
 const getInfo = async () => {
   // redis 数据
-  const cetInfo = await redis.getAsync('cet_info')
+  const cetInfo = await redis.get('cet_info')
   if (cetInfo) {
     console.log('get cet_info from redis')
     return JSON.parse(cetInfo)
@@ -62,7 +62,7 @@ const getInfo = async () => {
           provinces[id] = name
         })
 
-        redis.setAsync('cet_info', JSON.stringify({
+        redis.set('cet_info', JSON.stringify({
           title,
           provinces,
           cookie,
