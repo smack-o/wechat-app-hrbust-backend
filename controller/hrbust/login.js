@@ -3,7 +3,7 @@ const cheerio = require('cheerio')
 const Students = require('../../models/Students')
 const Users = require('../../models/Users')
 const { requestHeader, url, SimulateLogin } = require('../../utils/hrbust')
-const { redis } = require('../../utils')
+const { redis } = require('../../utils/redis')
 
 // 登录处理函数
 const login = async (ctx) => {

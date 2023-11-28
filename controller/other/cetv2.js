@@ -5,7 +5,7 @@ const cheerio = require('cheerio')
 const generate = require('nanoid/generate')
 const CetTicket = require('../../models/CetTicket')
 // model.id = nanoid()
-const { redis } = require('../../utils')
+const { redis } = require('../../utils/redis')
 
 
 const getRandomIp = () => {

@@ -1,6 +1,6 @@
 const superagent = require('superagent')
 const cheerio = require('cheerio')
-const { redis } = require('../../utils')
+const { redis } = require('../../utils/redis')
 
 const {
   requestHeader,
